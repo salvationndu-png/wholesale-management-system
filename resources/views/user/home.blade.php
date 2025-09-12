@@ -18,13 +18,13 @@
     @keyframes slideIn { from { transform: translateX(-100%) } to { transform: translateX(0) } }
     .anim-slide-in { animation: slideIn .28s cubic-bezier(.2,.9,.2,1) both; }
 
-    /* subtle left accent for active nav */
+  
     .nav-accent { background: linear-gradient(180deg, rgba(144, 241, 99, 0.18), rgba(144, 241, 99, 0.12)); }
-    /* hide sidebar scrollbar */
+   
     .no-scroll::-webkit-scrollbar { display: none; }
     .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* accessible focus ring fallback */
+  
     .focus-ring:focus { outline: 3px solid rgba(99, 241, 182, 0.58); outline-offset: 2px; }
   </style>
 </head>
@@ -53,7 +53,7 @@
 
   <!-- nav -->
   <nav class="flex-1 overflow-y-auto no-scroll py-4 px-3 space-y-1">
-    <!-- Dashboard (active example) -->
+
     <a href="{{ url('home') }}" aria-current="page"
        class="group flex items-center gap-3 rounded-lg px-4 py-3 transition hover:bg-blue-500 hover:translate-x-0.5 focus-ring nav-accent">
       <span class="w-8 h-8 flex items-center justify-center rounded-md bg-blue-500">
@@ -123,7 +123,6 @@
   <!-- mobile overlay -->
   <div id="backdrop" class="fixed inset-0 bg-black/40 z-30 opacity-0 pointer-events-none transition-opacity"></div>
 
-  <!-- MAIN (pad-left on md to avoid overlap) -->
   <div class="min-h-screen md:pl-64 flex flex-col">
 
     <!-- TOPBAR -->
@@ -140,7 +139,7 @@
 
         <h1 class="text-lg sm:text-xl font-semibold tracking-tight">Dashboard</h1>
 
-        <!-- account dropdown -->
+ 
         <div class="relative">
           <button id="accountBtn" class="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-slate-100 hover:bg-slate-200 transition focus-ring" aria-expanded="false">
             <span class="sr-only">Open account menu</span>
@@ -203,13 +202,13 @@
     </footer>
   </div>
 
-  <!-- SCRIPTS -->
+ 
   <script>
-    // Chart data (from your controller)
+
     const topProducts = @json($topProducts);
     const salesTrend  = @json($salesTrend);
 
-    // Doughnut
+
 
 
   </script>
