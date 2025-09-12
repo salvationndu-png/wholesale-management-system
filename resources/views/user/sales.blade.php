@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Record Sale - Lovehills</title>
 
-  <!-- Tailwind -->
-  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
@@ -17,7 +17,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
 
-  <!-- SIDEBAR (unchanged from your reference) -->
+
   <aside id="sidebar"
          class="fixed inset-y-0 left-0 z-40 w-72 md:w-64 -translate-x-full md:translate-x-0
                 bg-blue-600 text-white shadow-xl md:shadow-none transition-transform duration-300 ease-out flex flex-col">
@@ -85,7 +85,7 @@
     </div>
   </aside>
 
-  <!-- mobile overlay -->
+
   <div id="backdrop" class="fixed inset-0 bg-black/40 z-30 opacity-0 pointer-events-none transition-opacity"></div>
 
   <!-- MAIN -->
@@ -119,7 +119,7 @@
       </div>
     </header>
 
-    <!-- PAGE CONTENT -->
+
     <main class="flex-1 p-4 sm:p-6 space-y-6">
       <div class="max-w-5xl mx-auto space-y-4">
 
@@ -149,7 +149,7 @@
             </div>
           </div>
 
-          <!-- product options template -->
+     
           <template id="productOptions">
             <option value="" selected disabled>Select product</option>
             @foreach($products as $product)
@@ -182,7 +182,7 @@
   <!-- toast container -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
 
-  <!-- small UI script for sidebar + dropdown (keeps IDs) -->
+
   <script>
     const sidebar = document.getElementById('sidebar');
     const backdrop = document.getElementById('backdrop');
@@ -213,7 +213,7 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') accountMenu.classList.add('hidden'); });
   </script>
 
-  <!-- sales logic (responsive rows) -->
+
   <script src="/js/sales.js"></script>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
