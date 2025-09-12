@@ -258,7 +258,7 @@ public function addStock(Request $request)
         $stock->product_id = $request->product_id;
         $stock->quantity   = $request->quantity;
         $stock->date       = $request->date;
-        $stock->price      = $request->price; // ✅ save price here
+        $stock->price      = $request->price;
         $stock->save();
 
         // Update product quantity
@@ -282,7 +282,7 @@ public function addStock(Request $request)
                     'id'           => $item->id,
                     'product_name' => $item->product ? $item->product->name : 'Unknown',
                     'quantity'     => $item->quantity,
-                    'price'        => $item->price, // ✅ include price in JSON
+                    'price'        => $item->price, //
                 ];
             });
 
@@ -406,7 +406,7 @@ public function addSale(Request $request)
                 ]);
             }
 
-            // Reduce stock quantity using FIFO
+        
             $remainingToDeduct = $quantityRequested;
             $stocks = Stocks::where('product_id', $productId)
                 ->where('quantity', '>', 0)
@@ -427,7 +427,7 @@ public function addSale(Request $request)
                 }
             }
 
-            // After deduction, update product quantity to reflect accurate stock
+          
             $updatedTotalStock = Stocks::where('product_id', $productId)
                 ->sum('quantity');
             $product->quantity = $updatedTotalStock;
@@ -496,7 +496,7 @@ public function updatePrice(Request $request, $id) {
 
 public function getProductDetails($id)
 {
-    // eager load the stock relation
+  
     $product = Products::with('stock')->find($id);
 
     if ($product && $product->stock) {
