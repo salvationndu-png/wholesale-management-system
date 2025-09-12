@@ -6,7 +6,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Lovehills - Add Product</title>
 
-
+ <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
 
