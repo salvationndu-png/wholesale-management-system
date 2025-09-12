@@ -6,23 +6,23 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Track Sales - Lovehills</title>
 
-  <!-- Tailwind -->
-  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+ 
+   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* from your reference */
+
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
     .anim-fade-in-up { animation: fadeInUp .28s cubic-bezier(.2,.9,.2,1) both; }
     .no-scroll::-webkit-scrollbar { display: none; } .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     .focus-ring:focus { outline: 3px solid rgba(99,241,182,.58); outline-offset: 2px; }
-    /* small visual niceties */
+   
     .table-row-appear { animation: fadeInUp .18s ease both; }
     thead th.sticky { position: sticky; top: 0; z-index: 10; background: white; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
 
-  <!-- SIDEBAR (IDENTICAL STRUCTURE & IDS TO YOUR DASHBOARD REFERENCE) -->
+ 
   <aside id="sidebar"
          class="fixed inset-y-0 left-0 z-40 w-72 md:w-64 -translate-x-full md:translate-x-0
                 bg-blue-600 text-white shadow-xl md:shadow-none
@@ -96,10 +96,8 @@
   <!-- mobile overlay -->
   <div id="backdrop" class="fixed inset-0 bg-black/40 z-30 opacity-0 pointer-events-none transition-opacity"></div>
 
-  <!-- MAIN (pad-left on md to avoid overlap) -->
   <div class="min-h-screen md:pl-64 flex flex-col">
 
-    <!-- TOPBAR (same as dashboard reference) -->
     <header class="sticky top-0 z-20 border-b">
       <div class="h-16 flex items-center justify-between px-4 sm:px-6
                   bg-white/60 backdrop-blur supports-[backdrop-filter]:bg-white/50">
@@ -156,7 +154,6 @@
             </form>
           </div>
 
-          <!-- Quick stats / search / export -->
           <div class="bg-white rounded-2xl shadow p-4 ring-1 ring-slate-100 anim-fade-in-up space-y-3">
             <div class="flex items-center justify-between gap-2">
               <div>
@@ -169,15 +166,7 @@
               </div>
             </div>
 
-            <!-- <div>
-              <label class="block text-xs text-slate-500 mb-1">Quick search</label>
-              <input id="salesSearch" placeholder="Search product, date, payment..." type="search" class="w-full h-10 text-sm px-3 rounded-md border border-slate-200 focus:ring focus:ring-blue-200 focus:border-blue-400">
-            </div> -->
-
-            <!-- <div class="flex gap-2">
-              <button id="exportCsvBtn" class="flex-1 h-10 bg-emerald-600 text-white rounded-md text-sm hover:bg-emerald-700 transition">Export CSV</button>
-              <button id="clearBtn" class="h-10 px-3 bg-white border rounded-md text-sm hover:bg-slate-50">Clear</button>
-            </div> -->
+       
           </div>
         </div>
       </section>
@@ -219,9 +208,7 @@
     </footer>
   </div>
 
-  <!-- UI: sidebar + account dropdown (keeps IDs same) -->
   <script>
-    // Sidebar open/close (mobile)
     const sidebar = document.getElementById('sidebar');
     const backdrop = document.getElementById('backdrop');
     const openSidebarBtn = document.getElementById('openSidebar');
@@ -268,7 +255,6 @@
       const summaryTotal = document.getElementById('summaryTotal');
       const totalAmountDisplay = document.getElementById('totalAmountDisplay');
 
-      // utility: parse currency like "₦1,234.00" or "1234.00" to number
       function parseCurrency(text) {
         if (!text) return 0;
         const cleaned = text.replace(/[^0-9.\-]/g, '');
@@ -276,10 +262,9 @@
         return Number.isFinite(n) ? n : 0;
       }
 
-      // compute summary from current visible rows
       function computeSummary() {
         const rows = Array.from(tbody.querySelectorAll('tr')).filter(r => r.querySelectorAll('td').length > 0);
-        // if placeholder (single row with colspan), treat as 0
+       
         if (rows.length === 1 && rows[0].children.length === 1) {
           summaryRecords.textContent = '0';
           summaryTotal.textContent = '₦0.00';
@@ -302,12 +287,12 @@
         totalAmountDisplay.textContent = `Total: ₦${total.toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
       }
 
-      // simple search filter over current DOM rows (does not change server data)
+ 
       function applySearchFilter() {
         const q = (searchInput.value || '').trim().toLowerCase();
         const rows = Array.from(tbody.querySelectorAll('tr'));
         rows.forEach(r => {
-          // placeholder row (single td) should remain visible when no query
+         
           if (r.children.length === 1) {
             r.style.display = q ? 'none' : '';
             return;
@@ -320,38 +305,38 @@
 
  
 
-      // clear filters & search
+    
       function clearUi() {
         searchInput.value = '';
         computeSummary();
       }
 
-      // observe table changes (your track.js will insert rows) and recompute summary
+   
       const observer = new MutationObserver(muts => {
-        // add subtle class for new rows & compute summary
+      
         muts.forEach(m => {
           if (m.addedNodes && m.addedNodes.length) {
             m.addedNodes.forEach(node => {
               if (node.nodeType === 1 && node.matches('tr')) {
                 node.classList.add('table-row-appear');
-                // ensure numeric cells appear right aligned
+               
                 node.querySelectorAll('td:nth-child(3), td:nth-child(4), td:nth-child(5)').forEach(td => td.classList.add('text-right'));
                 node.querySelectorAll('td').forEach(td => td.classList.add('px-3', 'py-2'));
               }
             });
           }
         });
-        // small timeout to allow your script to finish any formatting
+      
         setTimeout(computeSummary, 60);
       });
       observer.observe(tbody, { childList: true, subtree: false });
 
-      // initial compute in case track.js already rendered before DOMContentLoaded
+    
       computeSummary();
     });
   </script>
 
-  <!-- Your tracking logic (unchanged) -->
+ 
   <script src="/js/track.js"></script>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
