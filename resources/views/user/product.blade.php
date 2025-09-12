@@ -6,18 +6,17 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Lovehills - Add Product</title>
 
-  <!-- Tailwind -->
-  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
 
   <style>
-    /* small animations + helpers (kept from your reference) */
+
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
     .anim-fade-in-up { animation: fadeInUp .28s cubic-bezier(.2,.9,.2,1) both; }
 
     @keyframes slideIn { from { transform: translateX(-100%) } to { transform: translateX(0) } }
     .anim-slide-in { animation: slideIn .28s cubic-bezier(.2,.9,.2,1) both; }
 
-    /* hide sidebar scrollbar */
+  
     .no-scroll::-webkit-scrollbar { display: none; }
     .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -27,7 +26,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
 
-  <!-- SIDEBAR (exact shell IDs preserved) -->
+
   <aside id="sidebar"
          class="fixed inset-y-0 left-0 z-40 w-72 md:w-64 -translate-x-full md:translate-x-0
                 bg-blue-600 text-white shadow-xl md:shadow-none
@@ -115,17 +114,16 @@
     </div>
   </aside>
 
-  <!-- mobile overlay -->
+
   <div id="backdrop" class="fixed inset-0 bg-black/40 z-30 opacity-0 pointer-events-none transition-opacity"></div>
 
-  <!-- MAIN (pad-left on md to avoid overlap) -->
+
   <div class="min-h-screen md:pl-64 flex flex-col">
 
-    <!-- TOPBAR (keeps original IDs for JS compatibility) -->
     <header class="sticky top-0 z-20 border-b">
       <div class="h-16 flex items-center justify-between px-4 sm:px-6
                   bg-white/60 backdrop-blur supports-[backdrop-filter]:bg-white/50">
-        <!-- mobile toggle (ID must be openSidebar) -->
+       
         <button id="openSidebar" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-slate-200 hover:bg-slate-100 transition"
                 aria-label="Open menu" aria-expanded="false">
           <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -155,10 +153,9 @@
       </div>
     </header>
 
-    <!-- PAGE CONTENT -->
+
     <main class="flex-1 p-4 sm:p-6 space-y-6">
 
-      <!-- Add Product form (keeps your original field IDs) -->
       <section class="bg-white rounded-2xl shadow p-5 ring-1 ring-slate-100">
         <h2 class="text-lg font-semibold text-slate-700 mb-3">Add Product</h2>
         <form id="addProductForm" class="space-y-4">
@@ -205,7 +202,7 @@
   <!-- Toast -->
   <div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-2 rounded opacity-0 transition-opacity z-50">Saved</div>
 
-  <!-- JS: sidebar/account behaviors + product CRUD -->
+
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
