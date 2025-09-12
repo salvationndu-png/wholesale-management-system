@@ -6,14 +6,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Record Stock - Lovehills</title>
 
-  <!-- Tailwind (layout/design) -->
-  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
 
-  <!-- Bootstrap (for your toasts + modals only) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Icons (used in delete button) -->
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
@@ -29,7 +29,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
 
-<!-- SIDEBAR (same as dashboard) -->
+
 <aside id="sidebar"
        class="fixed inset-y-0 left-0 z-40 w-72 md:w-64 -translate-x-full md:translate-x-0
               bg-blue-600 text-white shadow-xl md:shadow-none
@@ -138,7 +138,7 @@
     <form id="stockForm" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
       @csrf
 
-      <!-- Product (wider) -->
+
       <div class="md:col-span-4">
         <label class="block text-sm text-slate-600 mb-1.5">Product</label>
         <select name="product_id" id="productSelect" required
@@ -150,14 +150,13 @@
         </select>
       </div>
 
-      <!-- Quantity -->
       <div class="md:col-span-2">
         <label class="block text-sm text-slate-600 mb-1.5">Quantity</label>
         <input type="number" name="quantity" id="quantityInput" placeholder="e.g., 10" required
                class="w-full h-11 text-sm px-3 rounded-lg border border-slate-200 focus:border-blue-400 focus:ring focus:ring-blue-200/60" />
       </div>
 
-      <!-- Price -->
+
       <div class="md:col-span-2">
         <label class="block text-sm text-slate-600 mb-1.5">Price</label>
         <input type="number" step="0.01" name="price" id="priceInput" placeholder="Enter price" required
@@ -171,7 +170,6 @@
                class="w-full h-11 text-sm px-3 rounded-lg border border-slate-200 focus:border-blue-400 focus:ring focus:ring-blue-200/60" />
       </div>
 
-      <!-- Submit: wider so text doesn't wrap -->
       <div class="md:col-span-2">
         <button type="submit" id="submitBtn"
                 class="w-full h-11 px-4 text-sm inline-flex items-center justify-center rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition">
@@ -184,7 +182,7 @@
 
 
 
-    <!-- Table Card (now BELOW the form) -->
+ 
     <section>
       <div class="bg-white rounded-2xl shadow p-6 ring-1 ring-slate-100 anim-fade-in-up">
         <div class="flex items-center justify-between mb-4">
@@ -264,7 +262,6 @@
   </div>
 </div>
 
-<!-- Page UI (sidebar + account dropdown) -->
 <script>
   const sidebar = document.getElementById('sidebar');
   const backdrop = document.getElementById('backdrop');
@@ -289,7 +286,6 @@
   });
 </script>
 
-<!-- Your existing stock logic (unchanged) -->
 <script src="/js/stock.js"></script>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
