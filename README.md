@@ -60,7 +60,7 @@ Ensure you have the following installed:
 
 ### 1. Clone Repository
 ```bash
-git clone <repository-url>
+git clone 
 cd lovehills
 ```
 
@@ -155,12 +155,7 @@ After registration, all users are created as **Admin** by default. You can chang
 ### Concurrent Sales Processing
 The system uses database row-level locking (`lockForUpdate()`) to prevent overselling when multiple users process sales simultaneously:
 
-```php
-$product = Products::lockForUpdate()->find($productId);
-$stocks = Stocks::where('product_id', $productId)
-    ->lockForUpdate()
-    ->get();
-```
+
 
 ### FIFO Stock Management
 Stock is deducted in First-In-First-Out order:
@@ -255,11 +250,7 @@ php artisan view:cache
 npm run build
 ```
 
-### 2. Set Environment
-```env
-APP_ENV=production
-APP_DEBUG=false
-```
+
 
 ### 3. Set Permissions
 ```bash
@@ -267,69 +258,13 @@ chmod -R 775 storage bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 ```
 
-### 4. Configure Web Server
-Point document root to `/public` directory
 
-## ❓ Troubleshooting
 
-### Issue: "SQLSTATE[HY000]: General error: 1364 Field 'email' doesn't have a default value"
-**Solution**: Run migrations to add missing columns
-```bash
-php artisan migrate
-```
-
-### Issue: Deactivated user can still login
-**Solution**: Clear config cache
-```bash
-php artisan config:clear
-php artisan cache:clear
-```
-
-### Issue: Race condition / overselling
-**Solution**: Ensure database supports InnoDB engine (default in MySQL 8.0+)
-
-### Issue: Dark mode not working
-**Solution**: Check browser localStorage and refresh page
-
-## 💡 Future Enhancements
-
-- Customer management system
-- Barcode scanning support
-- Multi-currency support
-- Advanced analytics dashboard
-- Email/SMS notifications
-- Export to Excel/CSV
-- Mobile app (React Native/Flutter)
-- Multi-branch support
-
-## 🔒 Security Notes
-
-- Never commit `.env` file
-- Change `APP_KEY` in production
-- Use strong database passwords
-- Enable HTTPS in production
-- Regular database backups
-- Keep Laravel and dependencies updated
-
-## 👤 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## 📝 License
 
 This project is proprietary software. All rights reserved.
 
-## 📧 Support
-
-For issues or questions:
-- Open an issue on GitHub
-- Contact the development team
 
 ## 🚀 Acknowledgments
 
