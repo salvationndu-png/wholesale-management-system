@@ -30,16 +30,24 @@ class FortifyServiceProvider extends ServiceProvider
             CustomLoginRequest::class
         );
 
-        // ✅ Make Fortify think the login field is "login" (not "email")
+        // ✅ Make Fortify think the login field is "login"
         Fortify::username(fn () => 'login');
 
-        // ✅ Password-only authentication
+        // ✅ Allow multiple users to log in with only password
         Fortify::authenticateUsing(function (Request $request) {
-            $user = \App\Models\User::first(); // single account system
-
-            if ($user && Hash::check($request->password, $user->password)) {
-                return $user;
+            if (! $request->filled('password')) {
+                return null;
             }
+
+            foreach (\App\Models\User::all() as $user) {
+                if (Hash::check($request->password, $user->password)) {
+                    if ($user->status == 0) {
+                        return null;
+                    }
+                    return $user;
+                }
+            }
+
             return null;
         });
 

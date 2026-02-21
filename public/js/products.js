@@ -89,19 +89,21 @@
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
         productList.innerHTML = '';
+        
+        // Update count
+        const countEl = document.getElementById('productCount');
+        if (countEl) countEl.textContent = data.length;
+        
         (data || []).forEach((product, i) => {
           const tr = document.createElement('tr');
-          tr.className = 'hover:bg-slate-50';
+          tr.className = 'hover:bg-gray-50 transition-colors';
           tr.innerHTML = `
-            <td class="px-4 py-3 text-sm text-slate-700">${i + 1}</td>
-            <td class="px-4 py-3 text-sm text-slate-700">${escapeHtml(product.name ?? '')}</td>
-            <td class="px-4 py-3 text-sm text-slate-700">
-              <button class="delete-btn inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded" data-id="${product.id}">
-               <!-- Trash Can Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6  hover:text-red-700 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4" />
-            </svg>
-
+            <td class="px-4 py-3 text-sm text-gray-700">${i + 1}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 font-medium">${escapeHtml(product.name ?? '')}</td>
+            <td class="px-4 py-3 text-sm text-right">
+              <button class="delete-btn inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition-all" data-id="${product.id}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Delete
               </button>
             </td>
           `;
@@ -205,7 +207,4 @@
     });
 
     // Init on DOM ready
-    document.addEventListener('DOMContentLoaded', () => {
-      handleResize();
-      loadProducts();
-    });
+    loadProducts();

@@ -27,6 +27,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'usertype',
+        'status',
+        'created_by',
     ];
 
     /**
@@ -48,6 +51,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'status' => 'boolean',
     ];
 
     /**
@@ -58,4 +62,24 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function scopeAdmins($query)
+    {
+        return $query->where('usertype', 1);
+    }
+
+    public function scopeSalesUsers($query)
+    {
+        return $query->where('usertype', 0);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

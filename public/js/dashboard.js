@@ -3,7 +3,7 @@
     // Doughnut
     new Chart(document.getElementById('topProductsChart'), {
       type: 'doughnut',
-      data: { labels: topProducts.labels, datasets: [{ data: topProducts.data, backgroundColor: ['#6366f1','#16a34a','#f59e0b','#ef4444','#8b5cf6'] }] },
+      data: { labels: topProducts.labels, datasets: [{ data: topProducts.data, backgroundColor: ['#383ac4ff','#126831e0','#f59f0ba2','#ef4444a9','#8a5cf6a9'] }] },
       options: { plugins: { legend: { position: 'bottom' } } }
     });
 

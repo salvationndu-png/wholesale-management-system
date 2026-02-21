@@ -25,18 +25,37 @@ use App\Http\Controllers\Auth\CustomLoginController;
 Route::get('/', [HomeController::class, 'login']);
 // Route::get('/', [HomeController::class, 'index']);
 
+Route::middleware(['auth', 'check.status'])->group(function () {
+
 Route::get('/home', [HomeController::class, 'redirect']);
+Route::get('/sales', [HomeController::class, 'sales']);
+Route::get('/track', [HomeController::class, 'track']);
+
+
+});
+
+Route::middleware(['auth', 'check.status', 'restrict.normal'])->group(function () {
+Route::get('/product', [HomeController::class, 'product']);
+Route::get('/stock', [HomeController::class, 'stock']);
+
+// Admin User Management
+Route::get('/admin/users', [AdminController::class, 'manageUsers']);
+Route::get('/admin/users/list', [AdminController::class, 'getUsers']);
+Route::get('/admin/users/stats', [AdminController::class, 'getUserStats']);
+Route::post('/admin/users/create', [AdminController::class, 'createUser']);
+Route::put('/admin/users/{id}', [AdminController::class, 'updateUser']);
+Route::patch('/admin/users/{id}/toggle-status', [AdminController::class, 'toggleUserStatus']);
+Route::post('/admin/users/{id}/reset-password', [AdminController::class, 'resetPassword']);
+Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser']);
+});
 
 Route::get('/donatepage', [HomeController::class, 'donatepage']);
 
 Route::get('/paypage', [HomeController::class, 'paypage']);
 Route::get('/about', [HomeController::class, 'about']);
-Route::get('/contact', [HomeController::class, 'contact']);
+Route::get('/contact', [HomeController::class, 'contact']); 
 Route::get('/blog', [HomeController::class, 'blog']);
-Route::get('/sales', [HomeController::class, 'sales']);
-Route::get('/product', [HomeController::class, 'product']);
-Route::get('/track', [HomeController::class, 'track']);
-Route::get('/stock', [HomeController::class, 'stock']);
+
 
 
 
@@ -79,12 +98,17 @@ Route::get('/get-product-details/{id}', [HomeController::class, 'getProductDetai
 
 // Route::post('/pay', [App\Http\Controllers\PaymentController::class, 'redirectToGateway'])->name('pay');
 
+
+
 // // Laravel 8 & 9
 // Route::get('/payment/callback', [App\Http\Controllers\PaymentController::class, 'handleGatewayCallback']);
 // The route that the button calls to initialize payment
 Route::post('/pay', [FlutterwaveController::class, 'initialize'])->name('pay');
 // The callback url after a payment
 Route::get('/rave/callback', [FlutterwaveController::class, 'callback'])->name('callback');
+
+
+
 
 
 Route::middleware([

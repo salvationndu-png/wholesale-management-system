@@ -1,359 +1,225 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Track Sales - Lovehills</title>
+@extends('layouts.modern')
 
-  <!-- Tailwind -->
-  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+@section('title', 'Track Sales - Lovehills')
+@section('page-title', 'Track Sales')
+@section('page-subtitle', 'View sales reports and history')
 
-  <style>
-    /* from your reference */
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
-    .anim-fade-in-up { animation: fadeInUp .28s cubic-bezier(.2,.9,.2,1) both; }
-    .no-scroll::-webkit-scrollbar { display: none; } .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-    .focus-ring:focus { outline: 3px solid rgba(99,241,182,.58); outline-offset: 2px; }
-    /* small visual niceties */
-    .table-row-appear { animation: fadeInUp .18s ease both; }
-    thead th.sticky { position: sticky; top: 0; z-index: 10; background: white; }
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+@section('content')
+<div class="card p-6 mb-6">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-12 h-12 rounded-xl grid place-items-center text-white" style="background: var(--gradient-primary);">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+    </div>
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900">Filter Sales Records</h2>
+      <p class="text-sm text-gray-500">Select date range to view sales</p>
+    </div>
+  </div>
 
-  <!-- SIDEBAR (IDENTICAL STRUCTURE & IDS TO YOUR DASHBOARD REFERENCE) -->
-  <aside id="sidebar"
-         class="fixed inset-y-0 left-0 z-40 w-72 md:w-64 -translate-x-full md:translate-x-0
-                bg-blue-600 text-white shadow-xl md:shadow-none
-                transition-transform duration-300 ease-out flex flex-col">
+  <form id="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+      <input name="start_date" type="date" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" required>
+    </div>
 
-    <!-- brand + mobile close -->
-    <div class="h-16 flex items-center justify-between px-6 border-b border-white/20">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-md bg-blue-500 grid place-items-center text-white font-bold">LH</div>
-        <div class="text-lg font-semibold tracking-wider">Lovehills</div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+      <input name="end_date" type="date" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" required>
+    </div>
+
+    <div class="flex items-end">
+      <button type="submit" class="w-full px-4 py-3 rounded-xl font-medium text-white transition-all shadow-md hover:shadow-lg" style="background: var(--gradient-primary);">
+        <span class="flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          Filter Sales
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+  <div class="card p-6">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="w-10 h-10 rounded-lg bg-blue-100 grid place-items-center">
+        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
       </div>
-      <!-- close for mobile -->
-      <button id="closeSidebar" class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-blue-500 focus-ring"
-              aria-label="Close menu">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      <div>
+        <div class="text-sm text-gray-500">Total Records</div>
+        <div id="summaryRecords" class="text-2xl font-bold text-gray-900">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-6">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="w-10 h-10 rounded-lg bg-green-100 grid place-items-center">
+        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">Total Sales</div>
+        <div id="summaryTotal" class="text-2xl font-bold text-gray-900">₦0.00</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="card p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-gray-900">Sales Records</h3>
+      <button id="printBtn" onclick="printReport()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-all" style="display: none;">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+        Print Report
       </button>
     </div>
 
-    <!-- nav -->
-    <nav class="flex-1 overflow-y-auto no-scroll py-4 px-3 space-y-1">
-      <a href="{{ url('home') }}" class="group flex items-center gap-3 rounded-lg px-4 py-3 transition hover:bg-blue-500 hover:translate-x-0.5 focus-ring">
-        <span class="w-8 h-8 flex items-center justify-center rounded-md bg-blue-500">
-          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13h8V3H3v10zM13 21h8V11h-8v10zM13 3v6h8V3h-8zM3 21h8v-8H3v8z"></path></svg>
-        </span>
-        <span class="font-medium">Dashboard</span>
-      </a>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="px-3 py-3 text-left font-semibold text-gray-700">Date</th>
+            <th class="px-3 py-3 text-left font-semibold text-gray-700">Product</th>
+            <th class="px-3 py-3 text-right font-semibold text-gray-700">Qty</th>
+            <th class="px-3 py-3 text-right font-semibold text-gray-700">Price</th>
+            <th class="px-3 py-3 text-right font-semibold text-gray-700">Total</th>
+            <th class="px-3 py-3 text-left font-semibold text-gray-700">Payment</th>
+            <th class="px-3 py-3 text-left font-semibold text-gray-700">Sold By</th>
+          </tr>
+        </thead>
 
-      <a href="{{ url('product') }}" class="group flex items-center gap-3 rounded-lg px-4 py-3 transition hover:bg-blue-500 hover:translate-x-0.5 focus-ring">
-        <span class="w-8 h-8 flex items-center justify-center rounded-md bg-blue-500">
-          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-        <span class="font-medium">Add Product</span>
-      </a>
-
-      <a href="{{ url('stock') }}" class="group flex items-center gap-3 rounded-lg px-4 py-3 transition hover:bg-blue-500 hover:translate-x-0.5 focus-ring">
-        <span class="w-8 h-8 flex items-center justify-center rounded-md bg-blue-500">
-          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7l9-4 9 4-9 4-9-4zm0 6l9 4 9-4M3 13l9 4 9-4"/></svg>
-        </span>
-        <span class="font-medium">Record Stock</span>
-      </a>
-
-      <a href="{{ url('sales') }}" class="group flex items-center gap-3 rounded-lg px-4 py-3 transition hover:bg-blue-500 hover:translate-x-0.5 focus-ring">
-        <span class="w-8 h-8 flex items-center justify-center rounded-md bg-blue-500">
-          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h18v2H3zM5 7h14v14H5z"/></svg>
-        </span>
-        <span class="font-medium">Record Sale</span>
-      </a>
-
-      <!-- Track / View Sales - mark active -->
-      <a href="{{ url('track') }}" aria-current="page"
-         class="group flex items-center gap-3 rounded-lg px-4 py-3 transition hover:bg-blue-500 hover:translate-x-0.5 focus-ring nav-accent">
-        <span class="w-8 h-8 flex items-center justify-center rounded-md bg-blue-500">
-          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/></svg>
-        </span>
-        <span class="font-medium">View Sales</span>
-      </a>
-    </nav>
-
-    <!-- bottom logout -->
-    <div class="px-4 py-4 border-t border-white/20">
-      <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button class="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-md bg-rose-600 hover:bg-rose-700 transition focus-ring">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
-          Logout
-        </button>
-      </form>
+        <tbody id="salesTableBody" class="divide-y divide-gray-100">
+          <tr>
+            <td colspan="7" class="px-3 py-8 text-center text-gray-400">Use the filter to load sales records.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </aside>
 
-  <!-- mobile overlay -->
-  <div id="backdrop" class="fixed inset-0 bg-black/40 z-30 opacity-0 pointer-events-none transition-opacity"></div>
-
-  <!-- MAIN (pad-left on md to avoid overlap) -->
-  <div class="min-h-screen md:pl-64 flex flex-col">
-
-    <!-- TOPBAR (same as dashboard reference) -->
-    <header class="sticky top-0 z-20 border-b">
-      <div class="h-16 flex items-center justify-between px-4 sm:px-6
-                  bg-white/60 backdrop-blur supports-[backdrop-filter]:bg-white/50">
-        <!-- mobile toggle -->
-        <button id="openSidebar" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-slate-200 hover:bg-slate-100 transition"
-                aria-label="Open menu" aria-expanded="false">
-          <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-
-        <h1 class="text-lg sm:text-xl font-semibold tracking-tight">Track Sales</h1>
-
-        <!-- account dropdown -->
-        <div class="relative">
-          <button id="accountBtn" class="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-slate-100 hover:bg-slate-200 transition focus-ring" aria-expanded="false">
-            <span class="sr-only">Open account menu</span>
-            <span>👤 {{ Auth::user()->name ?? 'Account' }}</span>
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
-          </button>
-
-          <div id="accountMenu" class="hidden absolute right-0 mt-2 w-48 rounded-md border bg-white shadow-lg overflow-hidden anim-fade-in-up">
-            <a href="{{ url('user/profile') }}" class="block px-4 py-2 hover:bg-slate-50">Profile</a>
-            <div class="border-t"></div>
-            <form method="POST" action="{{ route('logout') }}">
-              @csrf
-              <button type="submit" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-rose-600">Logout</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- PAGE CONTENT -->
-    <main class="flex-1 p-4 sm:p-6 space-y-6">
-
-      <!-- Filter + quick stats -->
-      <section>
-        <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-          <div class="col-span-2 bg-white rounded-2xl shadow p-4 ring-1 ring-slate-100 anim-fade-in-up">
-            <form id="filterForm" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
-              <div class="sm:col-span-5">
-                <label class="block text-sm text-slate-600 mb-1">Start Date</label>
-                <input name="start_date" type="date" class="w-full h-10 text-sm px-3 rounded-md border border-slate-200 focus:ring focus:ring-blue-200 focus:border-blue-400" required>
-              </div>
-
-              <div class="sm:col-span-5">
-                <label class="block text-sm text-slate-600 mb-1">End Date</label>
-                <input name="end_date" type="date" class="w-full h-10 text-sm px-3 rounded-md border border-slate-200 focus:ring focus:ring-blue-200 focus:border-blue-400" required>
-              </div>
-
-              <div class="sm:col-span-2">
-                <button type="submit" class="w-full h-10 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition">Filter Sales</button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Quick stats / search / export -->
-          <div class="bg-white rounded-2xl shadow p-4 ring-1 ring-slate-100 anim-fade-in-up space-y-3">
-            <div class="flex items-center justify-between gap-2">
-              <div>
-                <div class="text-xs text-slate-400">Records</div>
-                <div id="summaryRecords" class="text-lg font-semibold">—</div>
-              </div>
-              <div>
-                <div class="text-xs text-slate-400">Total</div>
-                <div id="summaryTotal" class="text-lg font-semibold">₦0.00</div>
-              </div>
-            </div>
-
-            <!-- <div>
-              <label class="block text-xs text-slate-500 mb-1">Quick search</label>
-              <input id="salesSearch" placeholder="Search product, date, payment..." type="search" class="w-full h-10 text-sm px-3 rounded-md border border-slate-200 focus:ring focus:ring-blue-200 focus:border-blue-400">
-            </div> -->
-
-            <!-- <div class="flex gap-2">
-              <button id="exportCsvBtn" class="flex-1 h-10 bg-emerald-600 text-white rounded-md text-sm hover:bg-emerald-700 transition">Export CSV</button>
-              <button id="clearBtn" class="h-10 px-3 bg-white border rounded-md text-sm hover:bg-slate-50">Clear</button>
-            </div> -->
-          </div>
-        </div>
-      </section>
-
-      <!-- Sales table -->
-      <section>
-        <div class="bg-white rounded-2xl shadow p-4 ring-1 ring-slate-100 anim-fade-in-up">
-          <h3 class="text-slate-700 font-semibold mb-3">Sales Records</h3>
-
-          <div class="overflow-x-auto">
-            <table class="min-w-full text-sm border-collapse">
-              <thead class="border-b bg-white">
-                <tr>
-                  <th class="px-3 py-2 text-left sticky">Date</th>
-                  <th class="px-3 py-2 text-left sticky">Product</th>
-                  <th class="px-3 py-2 text-right sticky">Qty</th>
-                  <th class="px-3 py-2 text-right sticky">Price</th>
-                  <th class="px-3 py-2 text-right sticky">Total</th>
-                  <th class="px-3 py-2 text-left sticky">Payment</th>
-                </tr>
-              </thead>
-
-              <tbody id="salesTableBody" class="divide-y divide-slate-100">
-                <tr>
-                  <td colspan="6" class="px-3 py-8 text-center text-slate-400">Use the filter to load sales records.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div id="totalAmountDisplay" class="mt-4 text-right text-slate-600 font-semibold"></div>
-        </div>
-      </section>
-
-    </main>
-
-    <footer class="text-center text-slate-400 text-sm py-6">
-      &copy; 2025 Lovehills Wholesale Assistant
-    </footer>
+    <div id="totalAmountDisplay" class="mt-4 text-right text-gray-700 font-semibold"></div>
   </div>
+</div>
+@endsection
 
-  <!-- UI: sidebar + account dropdown (keeps IDs same) -->
-  <script>
-    // Sidebar open/close (mobile)
-    const sidebar = document.getElementById('sidebar');
-    const backdrop = document.getElementById('backdrop');
-    const openSidebarBtn = document.getElementById('openSidebar');
-    const closeSidebarBtn = document.getElementById('closeSidebar');
+@push('scripts')
+<script>
+let currentSalesData = [];
+let currentDateRange = { start: '', end: '' };
 
-    openSidebarBtn && openSidebarBtn.addEventListener('click', () => {
-      sidebar.classList.remove('-translate-x-full');
-      backdrop.classList.remove('opacity-0', 'pointer-events-none');
-    });
+document.getElementById('filterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    closeSidebarBtn && closeSidebarBtn.addEventListener('click', () => {
-      sidebar.classList.add('-translate-x-full');
-      backdrop.classList.add('opacity-0', 'pointer-events-none');
-    });
+    const form = this;
+    const startDate = form.start_date.value;
+    const endDate = form.end_date.value;
+    currentDateRange = { start: startDate, end: endDate };
 
-    backdrop && backdrop.addEventListener('click', () => {
-      sidebar.classList.add('-translate-x-full');
-      backdrop.classList.add('opacity-0', 'pointer-events-none');
-    });
+    const salesTableBody = document.getElementById('salesTableBody');
+    const totalAmountDisplay = document.getElementById('totalAmountDisplay');
+    const summaryRecords = document.getElementById('summaryRecords');
+    const summaryTotal = document.getElementById('summaryTotal');
+    const printBtn = document.getElementById('printBtn');
 
-    // account dropdown
-    const accountBtn = document.getElementById('accountBtn');
-    const accountMenu = document.getElementById('accountMenu');
-    accountBtn && accountBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      accountMenu.classList.toggle('hidden');
-    });
-    document.addEventListener('click', (e) => {
-      if (!accountMenu.classList.contains('hidden')) {
-        if (!accountMenu.contains(e.target) && !accountBtn.contains(e.target)) accountMenu.classList.add('hidden');
-      }
-    });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') accountMenu.classList.add('hidden'); });
-  </script>
+    salesTableBody.innerHTML = `<tr><td colspan="7" class="px-3 py-8 text-center text-gray-400">Loading...</td></tr>`;
+    totalAmountDisplay.textContent = '';
+    printBtn.style.display = 'none';
 
-  <!-- Table enhancements (non-invasive) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const tbody = document.getElementById('salesTableBody');
-      const searchInput = document.getElementById('salesSearch');
-     
-    
-      const summaryRecords = document.getElementById('summaryRecords');
-      const summaryTotal = document.getElementById('summaryTotal');
-      const totalAmountDisplay = document.getElementById('totalAmountDisplay');
-
-      // utility: parse currency like "₦1,234.00" or "1234.00" to number
-      function parseCurrency(text) {
-        if (!text) return 0;
-        const cleaned = text.replace(/[^0-9.\-]/g, '');
-        const n = Number(cleaned);
-        return Number.isFinite(n) ? n : 0;
-      }
-
-      // compute summary from current visible rows
-      function computeSummary() {
-        const rows = Array.from(tbody.querySelectorAll('tr')).filter(r => r.querySelectorAll('td').length > 0);
-        // if placeholder (single row with colspan), treat as 0
-        if (rows.length === 1 && rows[0].children.length === 1) {
-          summaryRecords.textContent = '0';
-          summaryTotal.textContent = '₦0.00';
-          totalAmountDisplay.textContent = '';
-          return;
-        }
-
-        let records = 0;
-        let total = 0;
-        rows.forEach(r => {
-          const cells = r.querySelectorAll('td');
-          if (cells.length < 5) return; // skip malformed
-          const totalCell = cells[4]; // 5th column = Total
-          const totalVal = parseCurrency(totalCell.textContent);
-          if (!isNaN(totalVal)) { total += totalVal; records++; }
+    fetch(`/track-sales-data?start_date=${startDate}&end_date=${endDate}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentSalesData = data.sales;
+                let rows = '';
+                if (data.sales.length === 0) {
+                    rows = `<tr><td colspan="7" class="px-3 py-8 text-center text-gray-400">No sales found for this range.</td></tr>`;
+                } else {
+                    data.sales.forEach(sale => {
+                        const date = new Date(sale.sale_date).toISOString().split('T')[0];
+                        const productName = sale.product ? sale.product.name : 'N/A';
+                        const userName = sale.user ? sale.user.name : 'Unknown';
+                        rows += `
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-3 py-3 text-sm text-gray-700">${date}</td>
+                                <td class="px-3 py-3 text-sm text-gray-900">${productName}</td>
+                                <td class="px-3 py-3 text-sm text-gray-700 text-right">${sale.quantity}</td>
+                                <td class="px-3 py-3 text-sm text-gray-700 text-right">₦${Number(sale.price).toLocaleString()}</td>
+                                <td class="px-3 py-3 text-sm text-gray-900 font-medium text-right">₦${Number(sale.total).toLocaleString()}</td>
+                                <td class="px-3 py-3 text-sm text-gray-700">${sale.payment_type}</td>
+                                <td class="px-3 py-3 text-sm text-gray-700">${userName}</td>
+                            </tr>`;
+                    });
+                    printBtn.style.display = 'inline-flex';
+                }
+                salesTableBody.innerHTML = rows;
+                totalAmountDisplay.textContent = `Total Sales: ₦${Number(data.totalAmount).toLocaleString()}`;
+                summaryRecords.textContent = data.sales.length;
+                summaryTotal.textContent = `₦${Number(data.totalAmount).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            } else {
+                salesTableBody.innerHTML = `<tr><td colspan="7" class="px-3 py-8 text-center text-red-500">Error fetching sales data.</td></tr>`;
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            salesTableBody.innerHTML = `<tr><td colspan="7" class="px-3 py-8 text-center text-red-500">Error fetching sales data.</td></tr>`;
         });
+});
 
-        summaryRecords.textContent = records.toString();
-        summaryTotal.textContent = '₦' + total.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        totalAmountDisplay.textContent = `Total: ₦${total.toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
-      }
+function printReport() {
+    const summaryTotal = document.getElementById('summaryTotal').textContent;
+    const printContent = `
+        <html>
+        <head>
+            <title>Sales Report</title>
+            <style>
+                body { font-family: monospace; width: 80mm; margin: 0; padding: 10px; font-size: 12px; }
+                .center { text-align: center; }
+                .bold { font-weight: bold; }
+                .line { border-top: 1px dashed #000; margin: 10px 0; }
+                table { width: 100%; border-collapse: collapse; }
+                td { padding: 2px 0; }
+                .right { text-align: right; }
+                .total { font-size: 14px; font-weight: bold; margin-top: 10px; }
+            </style>
+        </head>
+        <body>
+            <div class="center bold" style="font-size: 16px;">LOVE HILLS</div>
+            <div class="center" style="font-size: 11px;">Love Hills Plaza, Mandilas<br>Lagos Island</div>
+            <div class="line"></div>
+            <div class="center bold">SALES REPORT</div>
+            <div style="font-size: 11px; margin: 10px 0;">Period: ${currentDateRange.start} to ${currentDateRange.end}</div>
+            <div class="line"></div>
+            <table>
+                ${currentSalesData.map(sale => {
+                    const date = new Date(sale.sale_date).toISOString().split('T')[0];
+                    const productName = sale.product ? sale.product.name : 'N/A';
+                    return `
+                        <tr>
+                            <td colspan="2">${date} - ${productName}</td>
+                        </tr>
+                        <tr>
+                            <td>${sale.quantity} x ₦${Number(sale.price).toLocaleString()}</td>
+                            <td class="right">₦${Number(sale.total).toLocaleString()}</td>
+                        </tr>
+                        <tr><td colspan="2" style="height: 5px;"></td></tr>
+                    `;
+                }).join('')}
+            </table>
+            <div class="line"></div>
+            <div class="center total">TOTAL: ${summaryTotal}</div>
+            <div class="line"></div>
+            <div class="center" style="font-size: 11px; margin-top: 15px;">Generated: ${new Date().toLocaleString()}</div>
+            <div class="center" style="font-size: 10px; margin-top: 5px;">Thank you!</div>
+        </body>
+        </html>
+    `;
 
-      // simple search filter over current DOM rows (does not change server data)
-      function applySearchFilter() {
-        const q = (searchInput.value || '').trim().toLowerCase();
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        rows.forEach(r => {
-          // placeholder row (single td) should remain visible when no query
-          if (r.children.length === 1) {
-            r.style.display = q ? 'none' : '';
-            return;
-          }
-          const text = r.textContent.toLowerCase();
-          r.style.display = text.includes(q) ? '' : 'none';
-        });
-        computeSummary();
-      }
-
- 
-
-      // clear filters & search
-      function clearUi() {
-        searchInput.value = '';
-        computeSummary();
-      }
-
-      // observe table changes (your track.js will insert rows) and recompute summary
-      const observer = new MutationObserver(muts => {
-        // add subtle class for new rows & compute summary
-        muts.forEach(m => {
-          if (m.addedNodes && m.addedNodes.length) {
-            m.addedNodes.forEach(node => {
-              if (node.nodeType === 1 && node.matches('tr')) {
-                node.classList.add('table-row-appear');
-                // ensure numeric cells appear right aligned
-                node.querySelectorAll('td:nth-child(3), td:nth-child(4), td:nth-child(5)').forEach(td => td.classList.add('text-right'));
-                node.querySelectorAll('td').forEach(td => td.classList.add('px-3', 'py-2'));
-              }
-            });
-          }
-        });
-        // small timeout to allow your script to finish any formatting
-        setTimeout(computeSummary, 60);
-      });
-      observer.observe(tbody, { childList: true, subtree: false });
-
-      // initial compute in case track.js already rendered before DOMContentLoaded
-      computeSummary();
-    });
-  </script>
-
-  <!-- Your tracking logic (unchanged) -->
-  <script src="/js/track.js"></script>
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-</body>
-</html>
+    const printWindow = window.open('', '', 'width=300,height=600');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 250);
+}
+</script>
+@endpush
