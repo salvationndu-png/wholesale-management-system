@@ -278,8 +278,8 @@ This project is proprietary software. All rights reserved.
 
 **Version**: 1.0.0 | **Last Updated**: February 2026
 
-Made with ❤️ by the Lovehills Team
+Made with ❤️ by the Salva 404Softwares
 
-[Back to Top](#lovehills-wholesale-assistant-)
+
 
 </div>
